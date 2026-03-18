@@ -1,0 +1,498 @@
+[
+  {
+    "type": "function",
+    "name": "activeDelegation",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "checkDelegation",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "selector",
+        "type": "bytes4",
+        "internalType": "bytes4"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "valid",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "delegateDelegations",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "delegations",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "delegator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "delegate",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "maxSpend",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "spent",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "taskId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "revoked",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "createdAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "delegatorDelegations",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDelegateDelegations",
+    "inputs": [
+      {
+        "name": "delegate",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDelegation",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct DelegationModule.Delegation",
+        "components": [
+          {
+            "name": "delegator",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "delegate",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "maxSpend",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "spent",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "allowedSelectors",
+            "type": "bytes4[]",
+            "internalType": "bytes4[]"
+          },
+          {
+            "name": "expiryBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "taskId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "revoked",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDelegatorDelegations",
+    "inputs": [
+      {
+        "name": "delegator",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRemainingBudget",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isActive",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "issueDelegation",
+    "inputs": [
+      {
+        "name": "delegate",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "maxSpend",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "allowedSelectors",
+        "type": "bytes4[]",
+        "internalType": "bytes4[]"
+      },
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "taskId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "nextDelegationId",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "recordSpend",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "revokeDelegation",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "DelegationIssued",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "delegator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "delegate",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "maxSpend",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryBlock",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "taskId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegationRevoked",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegationSpent",
+    "inputs": [
+      {
+        "name": "delegationId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalSpent",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "DelegationExpired",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DelegationNotFound",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DelegationRevoked_",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidDelegate",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotDelegator",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SelectorNotAllowed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SpendCapExceeded",
+    "inputs": []
+  }
+]
