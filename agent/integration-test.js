@@ -11,11 +11,12 @@
  * 7. Record reputation on-chain
  * 8. Read final state and verify everything
  */
-const { publicClient, walletClient, account, CONTRACTS } = require('./config');
+const { publicClient, walletClient, account, chain, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
 const { buildLocusX402Evidence } = require('./locus-x402-evidence');
+const { buildMetamaskDelegationEvidence } = require('./metamask-erc7715');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -158,6 +159,22 @@ async function main() {
   const maxSpendWei = parseEther(TASK_BUDGET);
   const allowedSelectors = [submitDelSelector];
 
+  // Build MetaMask ERC-7715 evidence payload (attempted grant is optional).
+  // Even if MetaMask isn't available in this Node runtime, we still generate
+  // evidence that the delegation scope is permissioned with spend caps.
+  const maxSpendWei = parseEther(TASK_BUDGET);
+  const allowedSelectors = [submitDelSelector];
+  const metamaskEvidence = await buildMetamaskDelegationEvidence({
+    walletClient,
+    chainId: chain.id,
+    delegator: account.address,
+    delegate: account.address,
+    taskId,
+    maxSpendWei,
+    allowedSelectors,
+    expiryBlock,
+  });
+
   const { hash: h5 } = await write(
     CONTRACTS.delegationModule,
     DelegationModuleABI,
@@ -169,6 +186,29 @@ async function main() {
   const delActive = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'isActive', [delegationId]);
   const delBudget = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'getRemainingBudget', [delegationId]);
   log(5, `✅ Delegation #${delegationId} active: ${delActive} | Remaining: ${formatEther(delBudget)} ETH | Expiry: block ${expiryBlock}`);
+
+  // Save MetaMask permission grant evidence (payload + optional grant results + on-chain correlation).
+  const evidenceDir = __dirname + '/metamask-erc7715-evidence';
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  const evidencePath = `${evidenceDir}/permission-task-${taskId}.json`;
+  fs.writeFileSync(
+    evidencePath,
+    JSON.stringify(
+      {
+        ...metamaskEvidence,
+        onchain: {
+          delegationId: String(delegationId),
+          issueDelegationTx: h5,
+          delegatedSelectorSet: allowedSelectors,
+          maxSpendWei: String(maxSpendWei),
+          expiryBlock: String(expiryBlock),
+        },
+      },
+      null,
+      2
+    )
+  );
+  console.log(`🪪 MetaMask ERC-7715 evidence saved: ${evidencePath}`);
 
   // ─── STEP 6: Create subtask ──────────────────────────────────────
   log(6, 'Creating subtask...');
@@ -294,6 +334,10 @@ async function main() {
       path: 'agent/locus-x402-evidence/settlement-task-' + String(taskId) + '.json',
       escrowReleaseWorker: locusEvidence.escrowRelease.worker,
       escrowReleaseAmountWei: locusEvidence.escrowRelease.amountWei,
+    },
+    metamaskErc7715Evidence: {
+      attempted: !!(metamaskEvidence && metamaskEvidence.meta && metamaskEvidence.meta.attempted),
+      path: 'agent/metamask-erc7715-evidence/permission-task-' + String(taskId) + '.json',
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
