@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildLocusX402Evidence } = require('./locus-x402-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -72,6 +73,8 @@ async function main() {
   const balance = await publicClient.getBalance({ address: account.address });
   console.log(`Balance:  ${formatEther(balance)} ETH`);
   console.log('═'.repeat(60));
+
+  const fs = require('fs');
 
   // Start nonce cursor from "pending" so txs sent in this script always use the latest nonce.
   nonceCursor = BigInt(await publicClient.getTransactionCount({
@@ -152,12 +155,14 @@ async function main() {
 
   // Allow submitDeliverable selector
   const submitDelSelector = '0x' + keccak256(toBytes('submitDeliverable(uint256,bytes32,string)')).slice(2, 10);
+  const maxSpendWei = parseEther(TASK_BUDGET);
+  const allowedSelectors = [submitDelSelector];
 
   const { hash: h5 } = await write(
     CONTRACTS.delegationModule,
     DelegationModuleABI,
     'issueDelegation',
-    [account.address, parseEther(TASK_BUDGET), [submitDelSelector], expiryBlock, taskId]
+    [account.address, maxSpendWei, allowedSelectors, expiryBlock, taskId]
   );
   logTx('IssueDelegation', h5);
 
@@ -199,6 +204,23 @@ async function main() {
   log(7, `💰 Escrow balance after: ${formatEther(escrowBal2)} ETH (should be 0)`);
   log(7, `💸 Worker balance change: ${formatEther(workerBalAfter - workerBalBefore)} ETH (includes gas costs)`);
 
+  // ─── Locus x402-style settlement evidence (decoded from escrow release) ──
+  const locusEvidence = await buildLocusX402Evidence({
+    publicClient,
+    settlementTxHash: h7,
+    taskId,
+    delegator: account.address,
+    delegate: account.address,
+    maxSpendWei,
+    allowedSelectors,
+  });
+
+  const locusEvidenceDir = __dirname + '/locus-x402-evidence';
+  fs.mkdirSync(locusEvidenceDir, { recursive: true });
+  const locusEvidencePath = `${locusEvidenceDir}/settlement-task-${taskId}.json`;
+  fs.writeFileSync(locusEvidencePath, JSON.stringify(locusEvidence, null, 2));
+  console.log(`💸 Locus x402 evidence saved: ${locusEvidencePath}`);
+
   // ─── STEP 8: Record reputation ───────────────────────────────────
   log(8, 'Recording task completion to reputation ledger...');
   const { hash: h8 } = await write(
@@ -236,7 +258,6 @@ async function main() {
     cidHashHex: CID_HASH,
   });
 
-  const fs = require('fs');
   const receiptDir = __dirname + '/erc8004-receipts';
   fs.mkdirSync(receiptDir, { recursive: true });
   const receiptPath = `${receiptDir}/receipt-task-${taskId}.json`;
@@ -268,6 +289,11 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    locusX402Evidence: {
+      path: 'agent/locus-x402-evidence/settlement-task-' + String(taskId) + '.json',
+      escrowReleaseWorker: locusEvidence.escrowRelease.worker,
+      escrowReleaseAmountWei: locusEvidence.escrowRelease.amountWei,
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
