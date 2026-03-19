@@ -89,6 +89,9 @@ forge script script/Deploy.s.sol:DeployHireChain --rpc-url <RPC_URL> --broadcast
 cd agent && npm install && node integration-test.js
 ```
 
+## Integration PRs
+- Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
+
 ## Repo Structure
 
 ```
