@@ -1,0 +1,41 @@
+{
+  "receiptId": "0xd8322838cdd07c20e6b871dbd96e5c947ec3fbbdef21b6f60bee0feadc1fe79b",
+  "receiptType": "erc-8004-style",
+  "taskId": "12",
+  "agent": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+  "delivered": true,
+  "filecoinCid": "QmTestHireChainDeliverable2026",
+  "cidHash": "0x085dde00baca9f4bbc82f84dd9bb157f44f71c2741a67778c31384a480284035",
+  "earnedEth": "0.0005",
+  "deliveryTimeSec": "3600",
+  "score": "720",
+  "onchainProof": {
+    "deliverableVerifier": "0x9b498f9D32E5e98674A0B26A67194F48C222A9d1",
+    "reputationLedger": "0xfAA6447C4216681483240Df65243A16F905964b3",
+    "txHashes": {
+      "submitDeliverable": "0x0d8ad5d0f372af7ddf959a4f6765a693568a9aa4ac7f24ed92ad57e6e55e4e56",
+      "recordCompletion": "0x347efc09b01c43baa55783ad69ced622806691651a5dd2331bda69258cc3f25a"
+    },
+    "decodedEvents": {
+      "DeliverableSubmitted": {
+        "taskId": "12",
+        "worker": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+        "cidHash": "0x085dde00baca9f4bbc82f84dd9bb157f44f71c2741a67778c31384a480284035",
+        "filecoinCid": "QmTestHireChainDeliverable2026"
+      },
+      "DeliverableVerified": {
+        "taskId": "12",
+        "worker": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B"
+      },
+      "DeliverableDisputed": null,
+      "CompletionRecorded": {
+        "agent": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+        "taskId": "12",
+        "deliveryTime": "3600",
+        "earned": "500000000000000",
+        "newScore": "750"
+      }
+    }
+  },
+  "generatedAt": "2026-03-19T15:49:13.367Z"
+}

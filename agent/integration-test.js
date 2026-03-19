@@ -14,6 +14,8 @@
 const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
+const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
 const DeliverableVerifierABI = require('./abi/DeliverableVerifier.json');
@@ -21,6 +23,9 @@ const ReputationLedgerABI = require('./abi/ReputationLedger.json');
 const DelegationModuleABI = require('./abi/DelegationModule.json');
 
 const TX_LOG = [];
+
+// Cursor for manual nonce management (prevents "nonce too low" when the account has recent txs).
+let nonceCursor = null;
 
 function log(step, msg) {
   const ts = new Date().toISOString().slice(11, 19);
@@ -46,6 +51,10 @@ async function read(address, abi, fn, args = []) {
 async function write(address, abi, fn, args = [], value) {
   const opts = { address, abi, functionName: fn, args };
   if (value) opts.value = value;
+  if (nonceCursor !== null) {
+    opts.nonce = nonceCursor;
+    nonceCursor = nonceCursor + 1n;
+  }
   const hash = await walletClient.writeContract(opts);
   return { hash, receipt: await waitTx(hash) };
 }
@@ -63,6 +72,12 @@ async function main() {
   const balance = await publicClient.getBalance({ address: account.address });
   console.log(`Balance:  ${formatEther(balance)} ETH`);
   console.log('═'.repeat(60));
+
+  // Start nonce cursor from "pending" so txs sent in this script always use the latest nonce.
+  nonceCursor = BigInt(await publicClient.getTransactionCount({
+    address: account.address,
+    blockTag: 'pending',
+  }));
 
   // We use the same address as both poster and worker for the integration test
   const TASK_BUDGET = '0.0005';  // Small budget for testing
@@ -199,6 +214,35 @@ async function main() {
   log(8, `✅ Reputation: ${rep.tasksCompleted} completed | ${rep.tasksFailed} failed | Score: ${score}/1000`);
   log(8, `💰 Total earned (on-chain): ${formatEther(rep.totalEarned)} ETH`);
 
+  // ─── Protocol Labs / ERC-8004 receipts artifact (off-chain, chain-bound) ──
+  const earnedEth = TASK_BUDGET;
+  const deliveryTimeSec = 3600n;
+  const receiptArtifact = await generateErc8004ReceiptArtifact({
+    publicClient,
+    taskId,
+    agentAddress: account.address,
+    contractAddresses: {
+      deliverableVerifier: CONTRACTS.deliverableVerifier,
+      reputationLedger: CONTRACTS.reputationLedger,
+    },
+    txHashes: {
+      submitDeliverable: h7,
+      recordCompletion: h8,
+    },
+    deliveryTimeSec,
+    earnedEth,
+    score,
+    filecoinCid: FILECOIN_CID,
+    cidHashHex: CID_HASH,
+  });
+
+  const fs = require('fs');
+  const receiptDir = __dirname + '/erc8004-receipts';
+  fs.mkdirSync(receiptDir, { recursive: true });
+  const receiptPath = `${receiptDir}/receipt-task-${taskId}.json`;
+  fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
+  console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
+
   // ─── SUMMARY ─────────────────────────────────────────────────────
   console.log('\n' + '═'.repeat(60));
   console.log('🎉 INTEGRATION TEST COMPLETE — ALL STEPS PASSED');
@@ -213,7 +257,6 @@ async function main() {
   console.log(`🔗 View all on BaseScan: https://sepolia.basescan.org/address/${account.address}`);
 
   // Save results
-  const fs = require('fs');
   const results = {
     timestamp: new Date().toISOString(),
     network: 'base-mainnet',
@@ -222,6 +265,10 @@ async function main() {
     transactions: TX_LOG,
     taskId: String(taskId),
     reputation: { tasksCompleted: Number(rep.tasksCompleted), score: Number(score) },
+    erc8004Receipt: {
+      receiptId: receiptArtifact.receiptId,
+      path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
   console.log('\n📄 Results saved to agent/integration-results.json');
