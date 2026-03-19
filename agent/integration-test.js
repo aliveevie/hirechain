@@ -73,6 +73,10 @@ async function main() {
   log(1, `Posting task with ${TASK_BUDGET} ETH budget...`);
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 86400); // 24h
 
+  // The deployed registry may already have tasks, so task IDs are not guaranteed to be `1`.
+  // We read `nextTaskId` before posting to get the deterministic taskId we just created.
+  const taskId = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'nextTaskId');
+
   const { hash: h1 } = await write(
     CONTRACTS.hireRegistry,
     HireRegistryABI,
@@ -83,11 +87,11 @@ async function main() {
   logTx('PostTask', h1);
 
   // Read task
-  const task1 = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getTask', [1n]);
-  log(1, `✅ Task #1 created | Poster: ${task1.poster} | Budget: ${formatEther(task1.budget)} ETH | Status: ${task1.status}`);
+  const task1 = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getTask', [taskId]);
+  log(1, `✅ Task #${taskId} created | Poster: ${task1.poster} | Budget: ${formatEther(task1.budget)} ETH | Status: ${task1.status}`);
 
   // Check escrow balance
-  const escrowBal1 = await read(CONTRACTS.escrowVault, EscrowVaultABI, 'getBalance', [1n]);
+  const escrowBal1 = await read(CONTRACTS.escrowVault, EscrowVaultABI, 'getBalance', [taskId]);
   log(1, `💰 Escrow balance: ${formatEther(escrowBal1)} ETH`);
 
   // ─── STEP 2: Set expected hash in verifier ───────────────────────
@@ -96,7 +100,7 @@ async function main() {
     CONTRACTS.deliverableVerifier,
     DeliverableVerifierABI,
     'setExpectedHash',
-    [1n, CID_HASH]
+    [taskId, CID_HASH]
   );
   logTx('SetExpectedHash', h2);
   log(2, '✅ Expected hash set');
@@ -107,7 +111,7 @@ async function main() {
     CONTRACTS.hireRegistry,
     HireRegistryABI,
     'submitBid',
-    [1n, parseEther(TASK_BUDGET), 'I will build this in 24 hours with on-chain verification']
+    [taskId, parseEther(TASK_BUDGET), 'I will build this in 24 hours with on-chain verification']
   );
   logTx('SubmitBid', h3);
   log(3, '✅ Bid submitted');
@@ -118,17 +122,18 @@ async function main() {
     CONTRACTS.hireRegistry,
     HireRegistryABI,
     'acceptBid',
-    [1n, 0n]
+    [taskId, 0n]
   );
   logTx('AcceptBid', h4);
 
-  const task2 = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getTask', [1n]);
+  const task2 = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getTask', [taskId]);
   log(4, `✅ Worker assigned: ${task2.worker} | Status: ${task2.status}`);
 
   // ─── STEP 5: Issue delegation to worker ──────────────────────────
   log(5, 'Issuing ERC-7715 delegation to worker...');
   const currentBlock = await publicClient.getBlockNumber();
   const expiryBlock = currentBlock + 10000n;
+  const delegationId = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'nextDelegationId');
 
   // Allow submitDeliverable selector
   const submitDelSelector = '0x' + keccak256(toBytes('submitDeliverable(uint256,bytes32,string)')).slice(2, 10);
@@ -137,13 +142,13 @@ async function main() {
     CONTRACTS.delegationModule,
     DelegationModuleABI,
     'issueDelegation',
-    [account.address, parseEther(TASK_BUDGET), [submitDelSelector], expiryBlock, 1n]
+    [account.address, parseEther(TASK_BUDGET), [submitDelSelector], expiryBlock, taskId]
   );
   logTx('IssueDelegation', h5);
 
-  const delActive = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'isActive', [1n]);
-  const delBudget = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'getRemainingBudget', [1n]);
-  log(5, `✅ Delegation #1 active: ${delActive} | Remaining: ${formatEther(delBudget)} ETH | Expiry: block ${expiryBlock}`);
+  const delActive = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'isActive', [delegationId]);
+  const delBudget = await read(CONTRACTS.delegationModule, DelegationModuleABI, 'getRemainingBudget', [delegationId]);
+  log(5, `✅ Delegation #${delegationId} active: ${delActive} | Remaining: ${formatEther(delBudget)} ETH | Expiry: block ${expiryBlock}`);
 
   // ─── STEP 6: Create subtask ──────────────────────────────────────
   log(6, 'Creating subtask...');
@@ -151,12 +156,12 @@ async function main() {
     CONTRACTS.hireRegistry,
     HireRegistryABI,
     'createSubtask',
-    [1n, 'Frontend: Build React dashboard for task management', '0x0000000000000000000000000000000000000000000000000000000000000000', parseEther('0.0002'), deadline]
+    [taskId, 'Frontend: Build React dashboard for task management', '0x0000000000000000000000000000000000000000000000000000000000000000', parseEther('0.0002'), deadline]
   );
   logTx('CreateSubtask', h6);
 
-  const subtasks = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getSubtaskIds', [1n]);
-  log(6, `✅ Subtask created | Parent #1 now has ${subtasks.length} subtask(s)`);
+  const subtasks = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getSubtaskIds', [taskId]);
+  log(6, `✅ Subtask created | Parent #${taskId} now has ${subtasks.length} subtask(s)`);
 
   // ─── STEP 7: Submit deliverable (matching CID) ───────────────────
   log(7, `Worker submitting deliverable: ${FILECOIN_CID}`);
@@ -166,13 +171,13 @@ async function main() {
     CONTRACTS.deliverableVerifier,
     DeliverableVerifierABI,
     'submitDeliverable',
-    [1n, CID_HASH, FILECOIN_CID]
+    [taskId, CID_HASH, FILECOIN_CID]
   );
   logTx('SubmitDeliverable', h7);
 
   // Check if auto-verified and funds released
-  const verified = await read(CONTRACTS.deliverableVerifier, DeliverableVerifierABI, 'isVerified', [1n]);
-  const escrowBal2 = await read(CONTRACTS.escrowVault, EscrowVaultABI, 'getBalance', [1n]);
+  const verified = await read(CONTRACTS.deliverableVerifier, DeliverableVerifierABI, 'isVerified', [taskId]);
+  const escrowBal2 = await read(CONTRACTS.escrowVault, EscrowVaultABI, 'getBalance', [taskId]);
   const workerBalAfter = await publicClient.getBalance({ address: account.address });
 
   log(7, `✅ Deliverable verified: ${verified}`);
@@ -185,7 +190,7 @@ async function main() {
     CONTRACTS.reputationLedger,
     ReputationLedgerABI,
     'recordCompletion',
-    [account.address, 1n, 3600n, parseEther(TASK_BUDGET)]
+    [account.address, taskId, 3600n, parseEther(TASK_BUDGET)]
   );
   logTx('RecordCompletion', h8);
 
@@ -215,6 +220,7 @@ async function main() {
     deployer: account.address,
     contracts: CONTRACTS,
     transactions: TX_LOG,
+    taskId: String(taskId),
     reputation: { tasksCompleted: Number(rep.tasksCompleted), score: Number(score) },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
