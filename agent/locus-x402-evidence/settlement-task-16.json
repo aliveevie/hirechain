@@ -1,0 +1,19 @@
+{
+  "type": "locus-x402-settlement-evidence",
+  "taskId": "16",
+  "delegator": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+  "delegate": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+  "maxSpendWei": "500000000000000",
+  "allowedSelectors": [
+    "0x46ffbd65"
+  ],
+  "justification": "HireChain delegated settlement with auditability",
+  "settlementTxHash": "0xec896f8a28b1d73b662564c22f6821b5aefabede51a34fd33f1cab9ee2d4e72b",
+  "escrowRelease": {
+    "taskId": "16",
+    "worker": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+    "amountWei": "500000000000000"
+  },
+  "generatedAt": "2026-03-19T16:06:37.858Z",
+  "note": "Chain-bound evidence decoded from EscrowVault.Released; used as x402-style audit receipt substitute."
+}

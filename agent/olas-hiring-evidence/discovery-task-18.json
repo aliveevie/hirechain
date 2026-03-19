@@ -1,0 +1,19 @@
+{
+  "type": "olas-hiring-evidence",
+  "taskId": "18",
+  "taskDescription": "Integration test: Build a decentralized hiring system",
+  "onchain": {
+    "assignedWorker": "0x0000000000000000000000000000000000000000",
+    "bidderUsed": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B"
+  },
+  "olasDiscovery": {
+    "discoveryMode": "scaffold-deterministic-candidates",
+    "candidates": [
+      "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+      "0x83552079beb9690489b15311000ac88c17a0ad9d",
+      "0xb5bcb40f5bf34198263dfb61abcbc51fb0c1c865"
+    ],
+    "selectedWorker": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B"
+  },
+  "evidenceGeneratedAt": "2026-03-19T16:11:59.041Z"
+}
