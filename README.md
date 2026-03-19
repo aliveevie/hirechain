@@ -91,6 +91,7 @@ cd agent && npm install && node integration-test.js
 
 ## Integration PRs
 - Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
+- Filecoin Foundation (agentic storage evidence): https://github.com/aliveevie/hirechain/pull/9
 
 ## Repo Structure
 
