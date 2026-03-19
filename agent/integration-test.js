@@ -21,6 +21,7 @@ const { buildBaseServiceManifest } = require('./base-service-manifest');
 const { buildOlasHiringEvidence } = require('./olas-hiring-evidence');
 const { buildLocusX402Evidence } = require('./locus-x402-evidence');
 const { buildMetamaskDelegationEvidence } = require('./metamask-erc7715');
+const { buildSelfIdentityEvidence } = require('./self-identity-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -86,8 +87,6 @@ async function main() {
     address: account.address,
     blockTag: 'pending',
   }));
-
-  const fs = require('fs');
 
   // We use the same address as both poster and worker for the integration test
   const TASK_BUDGET = '0.0005';  // Small budget for testing
@@ -182,8 +181,6 @@ async function main() {
   // Build MetaMask ERC-7715 evidence payload (attempted grant is optional).
   // Even if MetaMask isn't available in this Node runtime, we still generate
   // evidence that the delegation scope is permissioned with spend caps.
-  const maxSpendWei = parseEther(TASK_BUDGET);
-  const allowedSelectors = [submitDelSelector];
   const metamaskEvidence = await buildMetamaskDelegationEvidence({
     walletClient,
     chainId: chain.id,
@@ -342,6 +339,24 @@ async function main() {
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
 
+  // ─── Self Protocol identity evidence ────────────────────────────────
+  const selfIdentityEvidence = await buildSelfIdentityEvidence({
+    taskId,
+    agentAddress: account.address,
+    reputationScore: score,
+    relatedTxHashes: {
+      issueDelegationTx: h5,
+      submitDeliverableTx: h7,
+      recordCompletionTx: h8,
+    },
+  });
+
+  const selfDir = __dirname + '/self-identity-evidence';
+  fs.mkdirSync(selfDir, { recursive: true });
+  const selfPath = `${selfDir}/identity-task-${taskId}.json`;
+  fs.writeFileSync(selfPath, JSON.stringify(selfIdentityEvidence, null, 2));
+  console.log(`🪪 Self identity evidence saved: ${selfPath}`);
+
   const bondCreditDir = __dirname + '/bondcredit-evidence';
   fs.mkdirSync(bondCreditDir, { recursive: true });
   const bondCreditPath = `${bondCreditDir}/credit-task-${taskId}.json`;
@@ -418,6 +433,11 @@ async function main() {
     metamaskErc7715Evidence: {
       attempted: !!(metamaskEvidence && metamaskEvidence.meta && metamaskEvidence.meta.attempted),
       path: 'agent/metamask-erc7715-evidence/permission-task-' + String(taskId) + '.json',
+    },
+    selfIdentityEvidence: {
+      path: 'agent/self-identity-evidence/identity-task-' + String(taskId) + '.json',
+      identityId: selfIdentityEvidence.identityId,
+    },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
   console.log('\n📄 Results saved to agent/integration-results.json');

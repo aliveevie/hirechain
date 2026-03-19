@@ -1,0 +1,17 @@
+{
+  "type": "self-identity-evidence",
+  "taskId": "26",
+  "agentAddress": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+  "identityId": "0x631651caa9a0b50b8e12eb3375b0e04a63e4fa999671259b378b95cec99074c2",
+  "reputationScore": 910,
+  "relatedTxHashes": {
+    "issueDelegationTx": "0x31e1bcefecdfe8052a3c982a1f45aa18806bf866691f96a95827f5d86559d42e",
+    "submitDeliverableTx": "0x985a2aed5b75e97a3dad32c9d70b6c44524dadfe5db0909a952ab01925d0133b",
+    "recordCompletionTx": "0x875807c64eb9271cb64061cc4ec63abe8c2bc593c9d3f6b676007aa0aabc7949"
+  },
+  "identityGate": {
+    "satisfied": true,
+    "proofMode": "offline-fallback"
+  },
+  "generatedAt": "2026-03-19T16:26:19.898Z"
+}
