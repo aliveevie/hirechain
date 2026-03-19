@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, chain, CONTRACTS } = require('./con
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildBondCreditEvidence } = require('./bondcredit-evidence');
 const { buildFilecoinEvidence } = require('./filecoin-onchaincloud-evidence');
 const { buildBaseServiceManifest } = require('./base-service-manifest');
 const { buildOlasHiringEvidence } = require('./olas-hiring-evidence');
@@ -299,6 +300,15 @@ async function main() {
   const earnedEth = TASK_BUDGET;
   const deliveryTimeSec = 3600n;
 
+  // ─── bond.credit credit-score evidence ───────────────────────────────
+  const bondCreditEvidence = await buildBondCreditEvidence({
+    taskId,
+    agentAddress: account.address,
+    reputationScore: score,
+    creditModel: 'bond.credit <- ReputationLedger.getScore (HireChain score)',
+    recordCompletionTxHash: h8,
+  });
+  
   // ─── Filecoin Onchain Cloud storage evidence ─────────────────────────
   const filecoinEvidence = await buildFilecoinEvidence({
     taskId,
@@ -331,6 +341,12 @@ async function main() {
   const receiptPath = `${receiptDir}/receipt-task-${taskId}.json`;
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
+
+  const bondCreditDir = __dirname + '/bondcredit-evidence';
+  fs.mkdirSync(bondCreditDir, { recursive: true });
+  const bondCreditPath = `${bondCreditDir}/credit-task-${taskId}.json`;
+  fs.writeFileSync(bondCreditPath, JSON.stringify(bondCreditEvidence, null, 2));
+  console.log(`💳 bond.credit evidence saved: ${bondCreditPath}`);
 
   const filecoinEvidenceDir = __dirname + '/filecoin-evidence';
   fs.mkdirSync(filecoinEvidenceDir, { recursive: true });
@@ -378,6 +394,10 @@ async function main() {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
     },
+    bondCreditEvidence: {
+      path: 'agent/bondcredit-evidence/credit-task-' + String(taskId) + '.json',
+      creditIntentId: bondCreditEvidence.creditIntentId,
+    },
     filecoinEvidence: {
       path: 'agent/filecoin-evidence/upload-task-' + String(taskId) + '.json',
       uploadMode: filecoinEvidence.filecoin && filecoinEvidence.filecoin.uploadMode,
@@ -398,7 +418,6 @@ async function main() {
     metamaskErc7715Evidence: {
       attempted: !!(metamaskEvidence && metamaskEvidence.meta && metamaskEvidence.meta.attempted),
       path: 'agent/metamask-erc7715-evidence/permission-task-' + String(taskId) + '.json',
-    },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
   console.log('\n📄 Results saved to agent/integration-results.json');

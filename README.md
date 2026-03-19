@@ -91,6 +91,7 @@ cd agent && npm install && node integration-test.js
 
 ## Integration PRs
 - Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
+- bond.credit (Agents that pay): https://github.com/aliveevie/hirechain/pull/10
 - Filecoin Foundation (agentic storage evidence): https://github.com/aliveevie/hirechain/pull/9
 - Base (Agent Services on Base): https://github.com/aliveevie/hirechain/pull/8
 - MetaMask (ERC-7715 delegations): https://github.com/aliveevie/hirechain/pull/5
