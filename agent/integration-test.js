@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildOlasHiringEvidence } = require('./olas-hiring-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -78,6 +79,8 @@ async function main() {
     address: account.address,
     blockTag: 'pending',
   }));
+
+  const fs = require('fs');
 
   // We use the same address as both poster and worker for the integration test
   const TASK_BUDGET = '0.0005';  // Small budget for testing
@@ -143,6 +146,20 @@ async function main() {
 
   const task2 = await read(CONTRACTS.hireRegistry, HireRegistryABI, 'getTask', [taskId]);
   log(4, `✅ Worker assigned: ${task2.worker} | Status: ${task2.status}`);
+
+  // ─── Olas marketplace hiring evidence (scaffold + on-chain correlation) ───
+  const olasEvidence = await buildOlasHiringEvidence({
+    taskId,
+    taskDescription: 'Integration test: Build a decentralized hiring system',
+    posterAddress: account.address,
+    onchainAssignedWorker: task2.worker,
+  });
+
+  const olasEvidenceDir = __dirname + '/olas-hiring-evidence';
+  fs.mkdirSync(olasEvidenceDir, { recursive: true });
+  const olasEvidencePath = `${olasEvidenceDir}/discovery-task-${taskId}.json`;
+  fs.writeFileSync(olasEvidencePath, JSON.stringify(olasEvidence, null, 2));
+  console.log(`🧩 Olas hiring evidence saved: ${olasEvidencePath}`);
 
   // ─── STEP 5: Issue delegation to worker ──────────────────────────
   log(5, 'Issuing ERC-7715 delegation to worker...');
@@ -236,7 +253,6 @@ async function main() {
     cidHashHex: CID_HASH,
   });
 
-  const fs = require('fs');
   const receiptDir = __dirname + '/erc8004-receipts';
   fs.mkdirSync(receiptDir, { recursive: true });
   const receiptPath = `${receiptDir}/receipt-task-${taskId}.json`;
@@ -268,6 +284,10 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    olasHiringEvidence: {
+      path: 'agent/olas-hiring-evidence/discovery-task-' + String(taskId) + '.json',
+      assignedWorker: olasEvidence.onchain.assignedWorker,
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
