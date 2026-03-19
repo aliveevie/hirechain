@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildSelfIdentityEvidence } = require('./self-identity-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -217,6 +218,19 @@ async function main() {
   // ─── Protocol Labs / ERC-8004 receipts artifact (off-chain, chain-bound) ──
   const earnedEth = TASK_BUDGET;
   const deliveryTimeSec = 3600n;
+
+  // ─── Self Protocol identity evidence ────────────────────────────────
+  const selfIdentityEvidence = await buildSelfIdentityEvidence({
+    taskId,
+    agentAddress: account.address,
+    reputationScore: score,
+    relatedTxHashes: {
+      issueDelegationTx: h5,
+      submitDeliverableTx: h7,
+      recordCompletionTx: h8,
+    },
+  });
+
   const receiptArtifact = await generateErc8004ReceiptArtifact({
     publicClient,
     taskId,
@@ -243,6 +257,12 @@ async function main() {
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
 
+  const selfDir = __dirname + '/self-identity-evidence';
+  fs.mkdirSync(selfDir, { recursive: true });
+  const selfPath = `${selfDir}/identity-task-${taskId}.json`;
+  fs.writeFileSync(selfPath, JSON.stringify(selfIdentityEvidence, null, 2));
+  console.log(`🪪 Self identity evidence saved: ${selfPath}`);
+
   // ─── SUMMARY ─────────────────────────────────────────────────────
   console.log('\n' + '═'.repeat(60));
   console.log('🎉 INTEGRATION TEST COMPLETE — ALL STEPS PASSED');
@@ -268,6 +288,10 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    selfIdentityEvidence: {
+      path: 'agent/self-identity-evidence/identity-task-' + String(taskId) + '.json',
+      identityId: selfIdentityEvidence.identityId,
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
