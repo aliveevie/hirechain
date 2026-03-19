@@ -91,6 +91,7 @@ cd agent && npm install && node integration-test.js
 
 ## Integration PRs
 - Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
+- Self (Best Self Agent ID Integration): https://github.com/aliveevie/hirechain/pull/11
 
 ## Repo Structure
 
