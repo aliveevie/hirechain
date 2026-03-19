@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, chain, CONTRACTS } = require('./con
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildLocusX402Evidence } = require('./locus-x402-evidence');
 const { buildMetamaskDelegationEvidence } = require('./metamask-erc7715');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
@@ -155,6 +156,8 @@ async function main() {
 
   // Allow submitDeliverable selector
   const submitDelSelector = '0x' + keccak256(toBytes('submitDeliverable(uint256,bytes32,string)')).slice(2, 10);
+  const maxSpendWei = parseEther(TASK_BUDGET);
+  const allowedSelectors = [submitDelSelector];
 
   // Build MetaMask ERC-7715 evidence payload (attempted grant is optional).
   // Even if MetaMask isn't available in this Node runtime, we still generate
@@ -241,6 +244,23 @@ async function main() {
   log(7, `💰 Escrow balance after: ${formatEther(escrowBal2)} ETH (should be 0)`);
   log(7, `💸 Worker balance change: ${formatEther(workerBalAfter - workerBalBefore)} ETH (includes gas costs)`);
 
+  // ─── Locus x402-style settlement evidence (decoded from escrow release) ──
+  const locusEvidence = await buildLocusX402Evidence({
+    publicClient,
+    settlementTxHash: h7,
+    taskId,
+    delegator: account.address,
+    delegate: account.address,
+    maxSpendWei,
+    allowedSelectors,
+  });
+
+  const locusEvidenceDir = __dirname + '/locus-x402-evidence';
+  fs.mkdirSync(locusEvidenceDir, { recursive: true });
+  const locusEvidencePath = `${locusEvidenceDir}/settlement-task-${taskId}.json`;
+  fs.writeFileSync(locusEvidencePath, JSON.stringify(locusEvidence, null, 2));
+  console.log(`💸 Locus x402 evidence saved: ${locusEvidencePath}`);
+
   // ─── STEP 8: Record reputation ───────────────────────────────────
   log(8, 'Recording task completion to reputation ledger...');
   const { hash: h8 } = await write(
@@ -309,6 +329,11 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    locusX402Evidence: {
+      path: 'agent/locus-x402-evidence/settlement-task-' + String(taskId) + '.json',
+      escrowReleaseWorker: locusEvidence.escrowRelease.worker,
+      escrowReleaseAmountWei: locusEvidence.escrowRelease.amountWei,
     },
     metamaskErc7715Evidence: {
       attempted: !!(metamaskEvidence && metamaskEvidence.meta && metamaskEvidence.meta.attempted),
