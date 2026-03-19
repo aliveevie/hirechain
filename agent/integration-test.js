@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildFilecoinEvidence } = require('./filecoin-onchaincloud-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -217,6 +218,15 @@ async function main() {
   // ─── Protocol Labs / ERC-8004 receipts artifact (off-chain, chain-bound) ──
   const earnedEth = TASK_BUDGET;
   const deliveryTimeSec = 3600n;
+
+  // ─── Filecoin Onchain Cloud storage evidence ─────────────────────────
+  const filecoinEvidence = await buildFilecoinEvidence({
+    taskId,
+    cid: FILECOIN_CID,
+    cidHashHex: CID_HASH,
+    submitDeliverableTxHash: h7,
+  });
+
   const receiptArtifact = await generateErc8004ReceiptArtifact({
     publicClient,
     taskId,
@@ -243,6 +253,12 @@ async function main() {
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
 
+  const filecoinEvidenceDir = __dirname + '/filecoin-evidence';
+  fs.mkdirSync(filecoinEvidenceDir, { recursive: true });
+  const filecoinEvidencePath = `${filecoinEvidenceDir}/upload-task-${taskId}.json`;
+  fs.writeFileSync(filecoinEvidencePath, JSON.stringify(filecoinEvidence, null, 2));
+  console.log(`☁️  Filecoin evidence saved: ${filecoinEvidencePath}`);
+
   // ─── SUMMARY ─────────────────────────────────────────────────────
   console.log('\n' + '═'.repeat(60));
   console.log('🎉 INTEGRATION TEST COMPLETE — ALL STEPS PASSED');
@@ -268,6 +284,10 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    filecoinEvidence: {
+      path: 'agent/filecoin-evidence/upload-task-' + String(taskId) + '.json',
+      uploadMode: filecoinEvidence.filecoin && filecoinEvidence.filecoin.uploadMode,
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));

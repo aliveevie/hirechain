@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-19T15:49:13.651Z",
+  "timestamp": "2026-03-19T16:18:34.976Z",
   "network": "base-mainnet",
   "deployer": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
   "contracts": {
@@ -12,52 +12,56 @@
   "transactions": [
     {
       "name": "PostTask",
-      "hash": "0x0d82f1008bfe5ff753a4c2c476d63f1a9c3095d2b25cf89ede017d9f7ec5b99c",
-      "url": "https://sepolia.basescan.org/tx/0x0d82f1008bfe5ff753a4c2c476d63f1a9c3095d2b25cf89ede017d9f7ec5b99c"
+      "hash": "0xdc1db037afea020873e34d912fe69ba49d88fb2143043ced1791de82b12ed550",
+      "url": "https://sepolia.basescan.org/tx/0xdc1db037afea020873e34d912fe69ba49d88fb2143043ced1791de82b12ed550"
     },
     {
       "name": "SetExpectedHash",
-      "hash": "0x64ad5de67c2a8ca12cc5ff3c828022a3518e2a750a4443d9488c860644787f7e",
-      "url": "https://sepolia.basescan.org/tx/0x64ad5de67c2a8ca12cc5ff3c828022a3518e2a750a4443d9488c860644787f7e"
+      "hash": "0xf2c224c651ddb247e6aecaffa28aaccee8b7702ddc0b5749cf4c0cb6fe0a5684",
+      "url": "https://sepolia.basescan.org/tx/0xf2c224c651ddb247e6aecaffa28aaccee8b7702ddc0b5749cf4c0cb6fe0a5684"
     },
     {
       "name": "SubmitBid",
-      "hash": "0xa2626b5f6dbc21863f822b3af9eec8765ba590cca29550caa507493dac38c5e9",
-      "url": "https://sepolia.basescan.org/tx/0xa2626b5f6dbc21863f822b3af9eec8765ba590cca29550caa507493dac38c5e9"
+      "hash": "0x081f6a729a311604284ead8b3eace64c6741fdf6eec72c16c5a3bdf58e236f9a",
+      "url": "https://sepolia.basescan.org/tx/0x081f6a729a311604284ead8b3eace64c6741fdf6eec72c16c5a3bdf58e236f9a"
     },
     {
       "name": "AcceptBid",
-      "hash": "0x88edb4b22139881401c34d7bc75c4bdb7fd2972cb4a7f289b35546852550405e",
-      "url": "https://sepolia.basescan.org/tx/0x88edb4b22139881401c34d7bc75c4bdb7fd2972cb4a7f289b35546852550405e"
+      "hash": "0x72d485f3fa85e7ab1c90481212ee6edcec2bd13788e0fc5e608c1482022885ea",
+      "url": "https://sepolia.basescan.org/tx/0x72d485f3fa85e7ab1c90481212ee6edcec2bd13788e0fc5e608c1482022885ea"
     },
     {
       "name": "IssueDelegation",
-      "hash": "0x31303d8782524a4c903e292d4e7cf7fc58108297788d84f379855c370ad9e01f",
-      "url": "https://sepolia.basescan.org/tx/0x31303d8782524a4c903e292d4e7cf7fc58108297788d84f379855c370ad9e01f"
+      "hash": "0x3c6226e3f899dd24743d6e6caa9defeb2c6a5570614fbeab0b44a2decfaae3db",
+      "url": "https://sepolia.basescan.org/tx/0x3c6226e3f899dd24743d6e6caa9defeb2c6a5570614fbeab0b44a2decfaae3db"
     },
     {
       "name": "CreateSubtask",
-      "hash": "0xdbf7eab560f15cba568e64415bc1ee6d4cbdeec14449abae1e7a8714cfdf9a84",
-      "url": "https://sepolia.basescan.org/tx/0xdbf7eab560f15cba568e64415bc1ee6d4cbdeec14449abae1e7a8714cfdf9a84"
+      "hash": "0x54d5d1571e7e20be9f4e65388a8540cd101e447ba59d901f6730065b61618886",
+      "url": "https://sepolia.basescan.org/tx/0x54d5d1571e7e20be9f4e65388a8540cd101e447ba59d901f6730065b61618886"
     },
     {
       "name": "SubmitDeliverable",
-      "hash": "0x0d8ad5d0f372af7ddf959a4f6765a693568a9aa4ac7f24ed92ad57e6e55e4e56",
-      "url": "https://sepolia.basescan.org/tx/0x0d8ad5d0f372af7ddf959a4f6765a693568a9aa4ac7f24ed92ad57e6e55e4e56"
+      "hash": "0x4394804e9198bd78c8de7225f9dea7d3ee6dc12a4b098a1459af9db1e565f1b9",
+      "url": "https://sepolia.basescan.org/tx/0x4394804e9198bd78c8de7225f9dea7d3ee6dc12a4b098a1459af9db1e565f1b9"
     },
     {
       "name": "RecordCompletion",
-      "hash": "0x347efc09b01c43baa55783ad69ced622806691651a5dd2331bda69258cc3f25a",
-      "url": "https://sepolia.basescan.org/tx/0x347efc09b01c43baa55783ad69ced622806691651a5dd2331bda69258cc3f25a"
+      "hash": "0x5aadf4c1873b9e58e69c64adfd9c57a26eee03afaf096ae0b492a9a9b928035b",
+      "url": "https://sepolia.basescan.org/tx/0x5aadf4c1873b9e58e69c64adfd9c57a26eee03afaf096ae0b492a9a9b928035b"
     }
   ],
-  "taskId": "12",
+  "taskId": "22",
   "reputation": {
-    "tasksCompleted": 4,
-    "score": 720
+    "tasksCompleted": 9,
+    "score": 870
   },
   "erc8004Receipt": {
-    "receiptId": "0xd8322838cdd07c20e6b871dbd96e5c947ec3fbbdef21b6f60bee0feadc1fe79b",
-    "path": "agent/erc8004-receipts/receipt-task-12.json"
+    "receiptId": "0x18de36095fe15e5dbe93cf30edbccb411f21c243baecc918b5c244c89d4dfe6d",
+    "path": "agent/erc8004-receipts/receipt-task-22.json"
+  },
+  "filecoinEvidence": {
+    "path": "agent/filecoin-evidence/upload-task-22.json",
+    "uploadMode": "offline-fallback"
   }
 }
