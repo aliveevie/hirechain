@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, CONTRACTS } = require('./config');
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildBondCreditEvidence } = require('./bondcredit-evidence');
 
 const HireRegistryABI = require('./abi/HireRegistry.json');
 const EscrowVaultABI = require('./abi/EscrowVault.json');
@@ -217,6 +218,16 @@ async function main() {
   // ─── Protocol Labs / ERC-8004 receipts artifact (off-chain, chain-bound) ──
   const earnedEth = TASK_BUDGET;
   const deliveryTimeSec = 3600n;
+
+  // ─── bond.credit credit-score evidence ───────────────────────────────
+  const bondCreditEvidence = await buildBondCreditEvidence({
+    taskId,
+    agentAddress: account.address,
+    reputationScore: score,
+    creditModel: 'bond.credit <- ReputationLedger.getScore (HireChain score)',
+    recordCompletionTxHash: h8,
+  });
+
   const receiptArtifact = await generateErc8004ReceiptArtifact({
     publicClient,
     taskId,
@@ -243,6 +254,12 @@ async function main() {
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
 
+  const bondCreditDir = __dirname + '/bondcredit-evidence';
+  fs.mkdirSync(bondCreditDir, { recursive: true });
+  const bondCreditPath = `${bondCreditDir}/credit-task-${taskId}.json`;
+  fs.writeFileSync(bondCreditPath, JSON.stringify(bondCreditEvidence, null, 2));
+  console.log(`💳 bond.credit evidence saved: ${bondCreditPath}`);
+
   // ─── SUMMARY ─────────────────────────────────────────────────────
   console.log('\n' + '═'.repeat(60));
   console.log('🎉 INTEGRATION TEST COMPLETE — ALL STEPS PASSED');
@@ -268,6 +285,10 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    bondCreditEvidence: {
+      path: 'agent/bondcredit-evidence/credit-task-' + String(taskId) + '.json',
+      creditIntentId: bondCreditEvidence.creditIntentId,
     },
   };
   fs.writeFileSync(__dirname + '/integration-results.json', JSON.stringify(results, null, 2));
