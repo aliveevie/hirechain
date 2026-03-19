@@ -1,0 +1,14 @@
+{
+  "type": "bondcredit-evidence",
+  "taskId": "24",
+  "agentAddress": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+  "reputationScore": 900,
+  "creditModel": "bond.credit <- ReputationLedger.getScore (HireChain score)",
+  "recordCompletionTxHash": "0x220b12b534d6cf8362e3c17f88fd576b76215b6cfe419b0ee6ac42feea60e971",
+  "creditIntentId": "0x7c8bec1ac050ac699fe9012e0dda8deabeab728e18ab0405487f0470162418e5",
+  "push": {
+    "pushed": false,
+    "response": null,
+    "mode": "offline-fallback"
+  }
+}

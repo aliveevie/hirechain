@@ -1,0 +1,17 @@
+{
+  "type": "filecoin-onchaincloud-storage-evidence",
+  "taskId": "22",
+  "deliverable": {
+    "cid": "QmTestHireChainDeliverable2026",
+    "cidHashHex": "0x085dde00baca9f4bbc82f84dd9bb157f44f71c2741a67778c31384a480284035",
+    "pieceCidMock": "0x38e788b9f45d73f5d84ff1876831a7f15c2f90e7671beab3bb5cfbdbb82c40c7"
+  },
+  "submitDeliverableTxHash": "0x4394804e9198bd78c8de7225f9dea7d3ee6dc12a4b098a1459af9db1e565f1b9",
+  "justification": "Deliverable CID submitted for verifiable storage evidence",
+  "filecoin": {
+    "uploadMode": "offline-fallback",
+    "uploaded": false,
+    "apiResponse": null
+  },
+  "generatedAt": "2026-03-19T16:18:33.643Z"
+}
