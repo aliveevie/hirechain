@@ -15,6 +15,7 @@ const { publicClient, walletClient, account, chain, CONTRACTS } = require('./con
 const { parseEther, formatEther, keccak256, toBytes } = require('viem');
 
 const { generateErc8004ReceiptArtifact } = require('./erc8004-receipts');
+const { buildBaseServiceManifest } = require('./base-service-manifest');
 const { buildOlasHiringEvidence } = require('./olas-hiring-evidence');
 const { buildLocusX402Evidence } = require('./locus-x402-evidence');
 const { buildMetamaskDelegationEvidence } = require('./metamask-erc7715');
@@ -321,6 +322,20 @@ async function main() {
   fs.writeFileSync(receiptPath, JSON.stringify(receiptArtifact, null, 2));
   console.log(`📜 ERC-8004 receipt artifact saved: ${receiptPath}`);
 
+  // ─── Base agent services discoverability manifest ────────────────
+  const baseEvidenceDir = __dirname + '/base-service-evidence';
+  fs.mkdirSync(baseEvidenceDir, { recursive: true });
+  const baseManifest = buildBaseServiceManifest({
+    taskId,
+    network: 'base-sepolia',
+    deployedContracts: CONTRACTS,
+    receiptArtifact,
+    txLog: TX_LOG,
+  });
+  const baseManifestPath = `${baseEvidenceDir}/manifest-task-${taskId}.json`;
+  fs.writeFileSync(baseManifestPath, JSON.stringify(baseManifest, null, 2));
+  console.log(`📍 Base service manifest saved: ${baseManifestPath}`);
+
   // ─── SUMMARY ─────────────────────────────────────────────────────
   console.log('\n' + '═'.repeat(60));
   console.log('🎉 INTEGRATION TEST COMPLETE — ALL STEPS PASSED');
@@ -346,6 +361,10 @@ async function main() {
     erc8004Receipt: {
       receiptId: receiptArtifact.receiptId,
       path: 'agent/erc8004-receipts/receipt-task-' + String(taskId) + '.json',
+    },
+    baseServiceEvidence: {
+      path: 'agent/base-service-evidence/manifest-task-' + String(taskId) + '.json',
+      txCount: baseManifest.evidence.txs.count,
     },
     olasHiringEvidence: {
       path: 'agent/olas-hiring-evidence/discovery-task-' + String(taskId) + '.json',
