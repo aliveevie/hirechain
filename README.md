@@ -92,6 +92,9 @@ cd agent && npm install && node integration-test.js
 ## Integration PRs
 - Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
 - Base (Agent Services on Base): https://github.com/aliveevie/hirechain/pull/8
+- MetaMask (ERC-7715 delegations): https://github.com/aliveevie/hirechain/pull/5
+- Locus (x402 settlement evidence): https://github.com/aliveevie/hirechain/pull/6
+- Olas (hiring evidence scaffolding): https://github.com/aliveevie/hirechain/pull/7
 
 ## Repo Structure
 

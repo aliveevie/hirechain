@@ -1,0 +1,30 @@
+{
+  "payload": {
+    "type": "erc-7715-permission-grant",
+    "chainId": 84532,
+    "delegator": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+    "delegate": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
+    "taskId": "14",
+    "maxSpendWei": "500000000000000",
+    "allowedSelectors": [
+      "0x46ffbd65"
+    ],
+    "expiryBlock": "39093737",
+    "expiryUnix": 1774540562,
+    "justification": "HireChain scoped delegation for worker execution",
+    "evidenceGeneratedAt": "2026-03-19T15:56:02.626Z"
+  },
+  "meta": {
+    "attempted": false,
+    "grantedPermissions": null
+  },
+  "onchain": {
+    "delegationId": "6",
+    "issueDelegationTx": "0xe13b7669b3f2da422655d87c997c03d414c239d5140257f2b10a2b51f3795a68",
+    "delegatedSelectorSet": [
+      "0x46ffbd65"
+    ],
+    "maxSpendWei": "500000000000000",
+    "expiryBlock": "39093737"
+  }
+}
