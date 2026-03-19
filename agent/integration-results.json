@@ -1,31 +1,39 @@
 {
-  "timestamp": "2026-03-18T20:40:00Z",
-  "network": "base-sepolia (chain 84532)",
+  "timestamp": "2026-03-19T03:23:37.741Z",
+  "network": "base-sepolia",
   "deployer": "0x7558E330298cbD6aC71C8D7040aa8EE75b0a9a2B",
   "contracts": {
-    "EscrowVault": "0xeB476f3c54c4565131dFa76b2ecB044Ddb521f5e",
-    "HireRegistry": "0x5B82099ecbDC6431B6770a7184c31E3471B9CaaC",
-    "DeliverableVerifier": "0x9b498f9D32E5e98674A0B26A67194F48C222A9d1",
-    "ReputationLedger": "0xfAA6447C4216681483240Df65243A16F905964b3",
-    "DelegationModule": "0x1f6679eC215fF9ca182A9B2c540E62440c33342d"
+    "escrowVault": "0xeB476f3c54c4565131dFa76b2ecB044Ddb521f5e",
+    "hireRegistry": "0x5B82099ecbDC6431B6770a7184c31E3471B9CaaC",
+    "deliverableVerifier": "0x9b498f9D32E5e98674A0B26A67194F48C222A9d1",
+    "reputationLedger": "0xfAA6447C4216681483240Df65243A16F905964b3",
+    "delegationModule": "0x1f6679eC215fF9ca182A9B2c540E62440c33342d"
   },
   "transactions": [
-    { "step": 1, "name": "PostTask", "hash": "0x6f0742a5a86fd306beef766903d722f8361d71ec833d8e7c7bb55a88f27607b0" },
-    { "step": 2, "name": "SetExpectedHash", "hash": "0xa649ef880bc09adcd0ab75bccbd6d0ec4d7d028d948738a0b63bd26f4eb5865b" },
-    { "step": 3, "name": "SubmitBid", "hash": "0x8dcdfe991a704c5119baf95f5f98ea2d58004ef66e877b4ea419116ac1633ef1" },
-    { "step": 4, "name": "AcceptBid", "hash": "0x0dcd98f95ebc11a9d459246d3870d8f7585e07d2e14ded1ec4f655467a5c65bd" },
-    { "step": 5, "name": "IssueDelegation", "hash": "0x5134ec32a369104135b4326843b2b2bdf9bbfa5d16be4fc49c2edac9ed829dbe" },
-    { "step": 6, "name": "CreateSubtask", "hash": "0x43ab8f89a66a6aa238f399416a0a6e0c2c44a4e9765dd294e413423adf696269" },
-    { "step": 7, "name": "SubmitDeliverable (auto-verified + escrow released)", "hash": "0x0d39da09d04c1f389d89ee0c53087a34d018fbc2c4a6ac4f839bd450a3a325ef" },
-    { "step": 8, "name": "RecordCompletion (reputation)", "hash": "0x0d39da09d04c1f389d89ee0c53087a34d018fbc2c4a6ac4f839bd450a3a325ef" },
-    { "step": "8b", "name": "AuthorizeCaller", "hash": "0xfc8fd6d7841eabc78acdb5d99ebc91dd0ef8b15528257dcd78fc2180e9599a6f" }
-  ],
-  "onChainState": {
-    "reputationScore": 630,
-    "tasksCompleted": 1,
-    "tasksFailed": 0,
-    "escrowBalance": "0 ETH",
-    "deliverableVerified": true,
-    "totalEarned": "0.0005 ETH"
-  }
+    {
+      "name": "PostTask",
+      "hash": "0x6f0742a5a86fd306beef766903d722f8361d71ec833d8e7c7bb55a88f27607b0",
+      "url": "https://sepolia.basescan.org/tx/0x6f0742a5a86fd306beef766903d722f8361d71ec833d8e7c7bb55a88f27607b0"
+    },
+    {
+      "name": "SetExpectedHash",
+      "hash": "0xa649ef880bc09adcd0ab75bccbd6d0ec4d7d028d948738a0b63bd26f4eb5865b",
+      "url": "https://sepolia.basescan.org/tx/0xa649ef880bc09adcd0ab75bccbd6d0ec4d7d028d948738a0b63bd26f4eb5865b"
+    },
+    {
+      "name": "SubmitBid",
+      "hash": "0x8dcdfe991a704c5119baf95f5f98ea2d58004ef66e877b4ea419116ac1633ef1",
+      "url": "https://sepolia.basescan.org/tx/0x8dcdfe991a704c5119baf95f5f98ea2d58004ef66e877b4ea419116ac1633ef1"
+    },
+    {
+      "name": "AcceptBid",
+      "hash": "0x0dcd98f95ebc11a9d459246d3870d8f7585e07d2e14ded1ec4f655467a5c65bd",
+      "url": "https://sepolia.basescan.org/tx/0x0dcd98f95ebc11a9d459246d3870d8f7585e07d2e14ded1ec4f655467a5c65bd"
+    },
+    {
+      "name": "CreateSubtask",
+      "hash": "0x5210135398e8a77aa9842c26315995b536eeaa8eabfbe431972b5d4df91178b4",
+      "url": "https://sepolia.basescan.org/tx/0x5210135398e8a77aa9842c26315995b536eeaa8eabfbe431972b5d4df91178b4"
+    }
+  ]
 }

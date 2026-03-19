@@ -28,7 +28,7 @@ function log(step, msg) {
 }
 
 function logTx(name, hash) {
-  const url = `https://basescan.org/tx/${hash}`;
+  const url = `https://sepolia.basescan.org/tx/${hash}`;
   TX_LOG.push({ name, hash, url });
   console.log(`  🔗 ${url}`);
 }
@@ -205,7 +205,7 @@ async function main() {
 
   const finalBalance = await publicClient.getBalance({ address: account.address });
   console.log(`\n💰 Final deployer balance: ${formatEther(finalBalance)} ETH`);
-  console.log(`🔗 View all on BaseScan: https://basescan.org/address/${account.address}`);
+  console.log(`🔗 View all on BaseScan: https://sepolia.basescan.org/address/${account.address}`);
 
   // Save results
   const fs = require('fs');
