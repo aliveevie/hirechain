@@ -1,0 +1,37 @@
+{
+  "type": "base-agent-service-manifest",
+  "taskId": "20",
+  "network": "base-sepolia",
+  "service": {
+    "name": "HireChain Orchestrator",
+    "category": "agent-services",
+    "sponsorTrack": "Agent Services on Base"
+  },
+  "deployedContracts": {
+    "hireRegistry": "0x5B82099ecbDC6431B6770a7184c31E3471B9CaaC",
+    "escrowVault": "0xeB476f3c54c4565131dFa76b2ecB044Ddb521f5e",
+    "deliverableVerifier": "0x9b498f9D32E5e98674A0B26A67194F48C222A9d1",
+    "reputationLedger": "0xfAA6447C4216681483240Df65243A16F905964b3",
+    "delegationModule": "0x1f6679eC215fF9ca182A9B2c540E62440c33342d"
+  },
+  "evidence": {
+    "erc8004Receipt": {
+      "receiptId": "0xfc7176234477d71c9814744b6e6be683869a9ca0a0b810aad90f124afbdeabc1",
+      "path": "agent/erc8004-receipts/receipt-task-20.json"
+    },
+    "txs": {
+      "count": 8,
+      "hashes": [
+        "0xf06bea1772ae0690ec266e83b3470058ae9ef8237493403b27cff022d90565e1",
+        "0xb10814024b8c72b68c544ff012393e427f450b1043b93ffcae26c2772a32dd93",
+        "0x4fa72baea09ffd8921b563880a8dc8ca85c39b1bf3754e22c8e22bfc555ad440",
+        "0x212908e29782cc97b13e94865f32d164993af368d37854d68f1665d49d6772ad",
+        "0x7af270fa96b10cf856c21d9ef9ba3786f76a9403cdeb0ee6491c6e8151788517",
+        "0xf2a9d9d96b40b6ed5f31fb61bfa3e5bb6f0f18fbcd43e94e87cfb4eb0069f8de",
+        "0x91dc932453a3daf1008a0c427b91cd763747833a41a258e4a46bc147025716b2",
+        "0x44af6f52e9776c61f91f849c08ffb32f9323789452a742685143e579f15db5b1"
+      ]
+    }
+  },
+  "generatedAt": "2026-03-19T16:15:29.688Z"
+}
