@@ -91,6 +91,7 @@ cd agent && npm install && node integration-test.js
 
 ## Integration PRs
 - Protocol Labs (ERC-8004 receipts): https://github.com/aliveevie/hirechain/pull/4
+- bond.credit (Agents that pay): https://github.com/aliveevie/hirechain/pull/10
 
 ## Repo Structure
 
